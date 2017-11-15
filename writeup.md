@@ -1,5 +1,4 @@
-##Writeup Template
-###You can use this file as a template for your writeup if you want to submit it as a markdown file, but feel free to use some other method and submit a pdf if you prefer.
+
 
 ---
 
@@ -32,16 +31,16 @@ The goals / steps of this project are the following:
 [negative]: ./non-vehicles/neg-mining/test5-008.jpg
 [video]: ./output_images/project_video_v4.mp4
 ## [Rubric](https://review.udacity.com/#!/rubrics/513/view) Points
-###Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
+### Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
 
 ---
-###Writeup / README
+### Writeup / README
 
-####1. Provide a Writeup / README that includes all the rubric points and how you addressed each one.  You can submit your writeup as markdown or pdf.  [Here](https://github.com/udacity/CarND-Vehicle-Detection/blob/master/writeup_template.md) is a template writeup for this project you can use as a guide and a starting point.  
+#### 1. Provide a Writeup / README that includes all the rubric points and how you addressed each one.  You can submit your writeup as markdown or pdf.  [Here](https://github.com/udacity/CarND-Vehicle-Detection/blob/master/writeup_template.md) is a template writeup for this project you can use as a guide and a starting point.  
 
 You're reading it!
 
-###Overall impression
+### Overall impression
 
 Reusing the strong infrastructure from the Advanced Lane Lines project, the overall impression was that the level of difficulty of this project was lower. Going through the project walkthrough video where Ryan tries to ensure that we start in the good direction certainly helped to save a lot of time, but the final code bears little resemblance to his, except in functions directly copied from the course, like `get_hog_features()`. I fairly quickly reached the stage where boxes are added to the test video.
 
@@ -68,9 +67,9 @@ The code base is split in two parts:
 
 The last cell of the IPython notebook calls `RoadImage` to process the videos. All the cells before that one contribute to examining the data set, training the classifier or even prototyping the algorithms.
 
-###Histogram of Oriented Gradients (HOG)
+### Histogram of Oriented Gradients (HOG)
 
-####1. Explain how (and identify where in your code) you extracted HOG features from the training images.
+#### 1. Explain how (and identify where in your code) you extracted HOG features from the training images.
 
 The code for this step is contained in the third and fourth code cells of the IPython notebook. The 3rd cell contains functions which extract the features from a single image. `get_hot_features()` (line 14), `bin_spatial()` (line 33) and `color_hist()` (line 42) are directly copied from the course. As suggested in the walkthrough, the color histogram bins are determined automatically based on the range of color value.
 
@@ -95,7 +94,7 @@ Here is an example using the `YCrCb` color space and HOG parameters of `orientat
 
 ![From car image to HOG rendering][hog]
 
-####2. Explain how you settled on your final choice of HOG parameters.
+#### 2. Explain how you settled on your final choice of HOG parameters.
 
 I explored the influence of each parameter in turn, increasing, then decreasing its value until I found an optimum value. The poorest results from the classifier were around 80%, similar to results achieved without using the HOG feature. The optimal number of orientations was 15, but the number of orientations multiplied by 588 gives the number of features from the HOG, and going from 9 to 15 increased the length of the features vector by 40%. Given the tiny performance difference, and the need to use as many images as possible from the data set to prevent overfitting, I chose to stick with 9, which is the compromise value for which the original authors of this approach noted tapering performance improvements.
 
@@ -109,7 +108,7 @@ I tested the classifier in RGB, HSV and YCrCb colorspace. I wasn't expecting goo
 
 I must admit that time limits on term 1 limited my investigations to what was needed to get a sense of the influence of each parameter, and to make sure that I worked with a sensible set of parameters. Re-training the classifier takes some time (almost equivalent to processing the video).
 
-####3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
+#### 3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
 
 I trained a linear SVM in the fourth code cell (Step 4) while I explored the possible parameter settings. I have a collection of pre-trained classifiers and scalers, which are all variants of each other:
 * Spatial binning 15x15, 16x16 or 32x32;
@@ -135,9 +134,9 @@ In order to reduce the number of false positives, an early version of the `draw_
 
 This technique is called negative hard mining. It is probably even more effective when practiced on a larger scale, the limit being the manual classification of matches as correct or false positives.
 
-###Sliding Window Search
+### Sliding Window Search
 
-####1. Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
+#### 1. Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
 
 The sliding window code, like all the final image processing code, is in the `RoadImage.find_cars()` method at line 3362.
 
@@ -175,7 +174,7 @@ The blockmap is not scaled, and is not cumulative. It is boolean and contains Tr
 
 There are actually two blockmaps: the blockmap called `blockmap` is zeroed at every scale, and only contains the areas matched at the next larger scale, which was processed just before in the loop starting at line 3601. This second blockmap is zeroed at line 3687. The cumulative blockmap `cumulative_bm` is only initialized once per video frame, and is the one used in `find_at_scale()` to avoid detecting the same car at multiple scales. `blockmap` is part of mechanism to eliminate false positives (see below).
 
-####2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
+#### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
 The seventh cell contains a set of prototype functions: the first working pipeline. The useful part of the code cell starts at line 198, where it loads the classifier, the scaler and the camera calibration from disk. All the files provided in the folder `test_images` were used for testing. The full results are available in the folder `output_images` under the same file name (for images annotated with boxes) and the corresponding heatmaps.
 
@@ -198,7 +197,7 @@ Although scale 4 is theoretically what we need to capture the black car as it pa
 
 ### Video Implementation
 
-####1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (somewhat wobbly or unstable bounding boxes are ok as long as you are identifying the vehicles most of the time with minimal false positives.)
+#### 1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (somewhat wobbly or unstable bounding boxes are ok as long as you are identifying the vehicles most of the time with minimal false positives.)
 Here's a [link to my video result](./output_images/project_video.mp4)
 
 The vehicle is correctly tracked, including when the black and white cars overlap, then separate. The red rectangles are detected cars. The thinner blue rectangles are raw outputs from the heatmaps and illustrate all the false-positives which are eliminated by the algorithms.
@@ -207,7 +206,7 @@ There are two false positives of short duration. The first at 0:09 matches a car
 
 ![Negative example I added][negative]
 
-####2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
+#### 2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
 
 The raw window matches are combined in a heatmap dedicated to each scale at which the algorithm runs. As currently configured for the video, the algorithm runs at scales 1.5, 1. and 0.5 (lines 29-30 in the last code cell). This is performed in the sub-function `find_at_scale()` which returns a list of raw window matches. 
 
@@ -247,9 +246,9 @@ In the folder `output_images`, the video `project_video_v4.mp4`, shows the proje
 
 ---
 
-###Discussion
+### Discussion
 
-####1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
+#### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
 The main weakness of the pipeline is the primary detection by the classifier. It is slow and only as reliable as the data sets. If I had more time, I would investigate a Deep Neural Network approach like Single Shot Detector, because it can take advantage of the whole data set for training. Despite the large quantity of vehicle pictures, it was only possible to use 10 thousand for training the classifier, because those classifiers must receive all the training data in a single batch.
 
