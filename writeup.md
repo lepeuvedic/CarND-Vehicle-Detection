@@ -25,7 +25,7 @@ The goals / steps of this project are the following:
 [scale15]: ./output_images/scale1.5.jpg
 [scale03]: ./output_images/scale0.3.jpg
 [test1]: ./output_images/test1.jpg
-[test1hm]: ./output_images/test1.jpg
+[test1hm]: ./output_images/test1_heatmap.jpg
 [test5]: ./output_images/test5.jpg
 [test2]: ./output_images/test2.jpg
 [negative]: ./non-vehicles/neg-mining/test5-008.jpg
@@ -158,7 +158,7 @@ For the largest scales, only two lines of window positions crossing the whole im
 
 For the long video, I took into account the information that the car which is filming, is on the leftmost lane of the highway. To increase the speed, only the right half of one of the search areas is used. The search areas used for the video are defined in the very last cell of the notebook. All the parameters of the algorithm are tunables, which can be modified without changing the code in `RoadImage`. The final parameters are the tunable setting of the notebook, and may not be reflected 100% in the default settings found in `RoadImage.py` at lines 3506 to 3537.
 
-It would have been an interesting test, to try to move the whole search pattern slightly at every frame, because it would help define a tight and stable boundary around object. This approach is not compatible with an other choice, which is implemented instead: scaled heatmaps.
+It would have been an interesting test, to try to move the whole search pattern slightly at every frame, because it would help define a tight and stable boundary around object. This approach is not compatible with another choice, which is implemented instead: scaled heatmaps.
 
 On one hand, it is very visible on the illustrations above, that the search defines a grid-like pattern. On the other hand, the principle of the heatmap is the add 1 (typically) to the interior of each window in which a car is detected. At large scales, those areas to manipulate are large : 65536 pixels at scale 4. But the information will always be the same inside each area defined by the grid pattern. Whatever the scale, the heatmap inside a window with 75% overlap, can always be encoded using a 4x4 pixel image. When they cover the declared search area, those images are the scaled heatmaps. They are initialized the first time a scale is used at line 3582.
 
